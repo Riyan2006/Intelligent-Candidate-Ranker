@@ -80,12 +80,12 @@ All offline steps are already run. Their outputs are in `artifacts/`. You do not
 
 | Step | Script | What it does | Runtime |
 |------|--------|-------------|---------|
-| 03 | `src/honeypot_detector.py` | Detects ~67–80 mathematically impossible profiles using 3 signals: YOE vs career span, expert skills with 0 duration, single role exceeding total YOE | ~2 min |
-| 04 | `src/behavioral_scorer.py` | Scores all 23 `redrob_signals` fields across 4 pillars: availability & recency, responsiveness & reliability, market demand, technical & authenticity | ~3 min |
-| 05 | `src/feature_engineer.py` | Computes 11 JD-aware feature groups per candidate: must-have skill match (with description scanning), company type, career trajectory, production evidence, keyword stuffer penalty, red flag detection | ~5 min |
-| 06 | `src/embedder.py` | Embeds all 100K candidates using Voyage AI `voyage-4-large` (1024-dim). Requires `VOYAGE_API_KEY`. **~2.5 hours** due to free-tier rate limits (2000 RPM, batches of 128). Checkpoints after every batch — safe to interrupt and resume. | **~2.5 hrs** |
-| 07 | `src/llm_scorer.py` | Scores top-500 candidates by embedding similarity using Gemini Flash on 5 rubric dimensions: technical depth, career trajectory, red flag check, shipping evidence, overall fit. Requires `GEMINI_API_KEY`. **~1 hour** at free-tier rate limits (12 RPM). Checkpoints after every call. | **~1 hr** |
-| 08 | `src/reasoning_generator_v2.py` | Pre-generates 1-sentence recruiter reasoning for top-100 candidates using Gemini Flash. Includes hallucination verification and rank-aware tone calibration. Requires `GEMINI_API_KEY`. | ~15 min |
+| 01 | `src/honeypot_detector.py` | Detects ~67–80 mathematically impossible profiles using 3 signals: YOE vs career span, expert skills with 0 duration, single role exceeding total YOE | ~2 min |
+| 02 | `src/behavioral_scorer.py` | Scores all 23 `redrob_signals` fields across 4 pillars: availability & recency, responsiveness & reliability, market demand, technical & authenticity | ~3 min |
+| 03 | `src/feature_engineer.py` | Computes 11 JD-aware feature groups per candidate: must-have skill match (with description scanning), company type, career trajectory, production evidence, keyword stuffer penalty, red flag detection | ~5 min |
+| 04 | `src/embedder.py` | Embeds all 100K candidates using Voyage AI `voyage-4-large` (1024-dim). Requires `VOYAGE_API_KEY`. **~2.5 hours** due to free-tier rate limits (2000 RPM, batches of 128). Checkpoints after every batch — safe to interrupt and resume. | **~2.5 hrs** |
+| 05 | `src/llm_scorer.py` | Scores top-500 candidates by embedding similarity using Gemini Flash on 5 rubric dimensions: technical depth, career trajectory, red flag check, shipping evidence, overall fit. Requires `GEMINI_API_KEY`. **~1 hour** at free-tier rate limits (12 RPM). Checkpoints after every call. | **~1 hr** |
+| 06 | `src/reasoning_generator_v2.py` | Pre-generates 1-sentence recruiter reasoning for top-100 candidates using Gemini Flash. Includes hallucination verification and rank-aware tone calibration. Requires `GEMINI_API_KEY`. | ~15 min |
 
 **To regenerate all artifacts from scratch:**
 
@@ -164,7 +164,7 @@ Three non-overlapping mathematical impossibility signals:
 ## AI tools used
 
 - **Claude (Anthropic)** — architecture design, script writing, debugging
-- **Gemini Flash** — LLM rubric scoring (Step 07) and reasoning generation (Step 08)
+- **Gemini Flash** — LLM rubric scoring (Step 05) and reasoning generation (Step 06)
 - **Voyage AI** — text embeddings (Step 06)
 
 ---
