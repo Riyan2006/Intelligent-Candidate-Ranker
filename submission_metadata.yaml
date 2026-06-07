@@ -1,0 +1,61 @@
+team_name: "Siftly"
+
+primary_contact:
+  name: "Riyan Sarkar"
+  email: "riyansarkar2006@gmail.com"
+  phone: "+91-8240142486"
+
+team_members:
+  - name: "Riyan Sarkar"
+    email: "riyansarkar2006@gmail.com"
+    role: "ML Systems Engineer"
+
+github_repo: "https://github.com/Riyan2006/Intelligent-Candidate-Ranker.git"
+
+sandbox_link: "https://huggingface.co/spaces/Riyaawn/intelligent-candidate-ranker"
+
+reproduce_command: "python rank.py --candidates ./data/candidates.jsonl --out ./riyansarkar2006_2427.csv"
+
+compute:
+  platform: "Lenovo LOQ 15 (12th Gen Intel)"
+  cpu_cores: 8
+  ram_gb: 16
+  python_version: "3.11"
+  os: "Windows 11"
+  uses_gpu_for_inference: false
+  has_network_during_ranking: false
+  pre_computation_required: true
+  pre_computation_time_minutes: 210
+
+ai_tools_used:
+  - "Claude"
+  - "Gemini"
+
+ai_usage_summary: |
+  Claude was used extensively for architecture design, script writing, debugging,
+  and code review throughout the pipeline. Gemini Flash (via Google AI API) was
+  used as a component within the pipeline itself — for LLM rubric scoring of the
+  top-500 candidates (Step 05) and pre-generating reasoning strings (Step 06).
+  Voyage AI was used for text embeddings (Step 04). No API calls are made during
+  the ranking step.
+
+methodology_summary: |
+  Four-signal fusion pipeline with offline pre-computation. (1) Voyage AI
+  voyage-4-large embeddings (1024-dim) for all 100K candidates, cosine similarity
+  to JD embedding as the semantic signal. (2) Gemini Flash LLM rubric scoring of
+  top-500 candidates on 5 dimensions: technical depth, career trajectory, red flag
+  check, shipping evidence, and overall fit. (3) Structured career features: must-have
+  skill matching scanning both skills[] and career descriptions, company type scoring,
+  production evidence detection, and keyword stuffer penalty. (4) Behavioral signals
+  from all 23 redrob_signals fields across availability, responsiveness, market demand,
+  and technical authenticity pillars. Honeypot detection via 3 mathematical impossibility
+  signals applied as a 0.01x multiplier. Final fusion: 0.35 x embedding + 0.30 x LLM +
+  0.20 x career features + 0.15 x behavioral. Entire ranking step runs in under 10
+  seconds on CPU with no network access.
+
+declarations:
+  read_submission_spec: true
+  code_is_original_work: true
+  no_collusion: true
+  honeypot_check_done: true
+  reproduction_tested: true
