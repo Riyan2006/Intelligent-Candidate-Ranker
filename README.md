@@ -1,4 +1,4 @@
-# Intelligent Candidate Ranker
+# Redrob Hackathon • Intelligent Candidate Ranker
 **Intelligent Candidate Discovery & Ranking Challenge**
 Participant: `riyansarkar2006_2427`
 
