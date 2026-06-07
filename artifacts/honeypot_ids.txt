@@ -1,0 +1,67 @@
+CAND_0003430 | Signal A — YOE impossibility: claims 13.7yr but career history spans only 0.8yr (excess: 12.9yr)
+CAND_0003582 | Signal B — Skill impossibility: 3 skills marked 'expert' with 0 months of use: MLflow, Photoshop, Content Writing
+CAND_0005291 | Signal A — YOE impossibility: claims 12.8yr but career history spans only 2.2yr (excess: 10.6yr)
+CAND_0007353 | Signal C — Duration impossibility: role 'Frontend Engineer' at Wayne Enterprises lasted 166mo but total YOE = 9.9yr (119mo)
+CAND_0007413 | Signal A — YOE impossibility: claims 13.3yr but career history spans only 3.1yr (excess: 10.2yr)
+CAND_0008960 | Signal C — Duration impossibility: role 'Graphic Designer' at Stark Industries lasted 171mo but total YOE = 10.3yr (124mo)
+CAND_0010294 | Signal C — Duration impossibility: role '.NET Developer' at Mphasis lasted 144mo but total YOE = 8.0yr (96mo)
+CAND_0010770 | Signal A — YOE impossibility: claims 15.2yr but career history spans only 6.7yr (excess: 8.5yr)
+CAND_0013536 | Signal A — YOE impossibility: claims 14.1yr but career history spans only 4.2yr (excess: 9.9yr)
+CAND_0016000 | Signal B — Skill impossibility: 5 skills marked 'expert' with 0 months of use: TypeScript, Go, Docker, Hadoop, Photoshop
+CAND_0018515 | Signal C — Duration impossibility: role 'Marketing Manager' at Initech lasted 150mo but total YOE = 8.5yr (102mo)
+CAND_0024752 | Signal A — YOE impossibility: claims 14.9yr but career history spans only 3.5yr (excess: 11.4yr)
+CAND_0025579 | Signal A — YOE impossibility: claims 12.9yr but career history spans only 1.7yr (excess: 11.2yr)
+CAND_0033131 | Signal A — YOE impossibility: claims 12.7yr but career history spans only 2.2yr (excess: 10.4yr)
+CAND_0033817 | Signal B — Skill impossibility: 4 skills marked 'expert' with 0 months of use: JavaScript, BigQuery, Six Sigma, gRPC
+CAND_0033972 | Signal B — Skill impossibility: 3 skills marked 'expert' with 0 months of use: Airflow, OpenCV, Figma
+CAND_0035104 | Signal C — Duration impossibility: role 'Software Engineer' at Cognizant lasted 114mo but total YOE = 5.5yr (66mo)
+CAND_0036299 | Signal A — YOE impossibility: claims 12.2yr but career history spans only 3.2yr (excess: 9.0yr)
+CAND_0036839 | Signal B — Skill impossibility: 3 skills marked 'expert' with 0 months of use: SAP, GCP, Rust
+CAND_0037000 | Signal C — Duration impossibility: role 'Machine Learning Engineer' at CRED lasted 48mo but total YOE = 2.7yr (32mo)
+CAND_0037539 | Signal C — Duration impossibility: role 'Project Manager' at Stark Industries lasted 106mo but total YOE = 4.9yr (59mo)
+CAND_0038431 | Signal A — YOE impossibility: claims 15.0yr but career history spans only 3.2yr (excess: 11.8yr)
+CAND_0039754 | Signal A — YOE impossibility: claims 16.2yr but career history spans only 7.6yr (excess: 8.6yr)
+CAND_0040075 | Signal C — Duration impossibility: role 'Marketing Manager' at Pied Piper lasted 228mo but total YOE = 15.0yr (180mo)
+CAND_0040853 | Signal C — Duration impossibility: role 'Operations Manager' at Initech lasted 61mo but total YOE = 1.1yr (13mo)
+CAND_0042245 | Signal B — Skill impossibility: 3 skills marked 'expert' with 0 months of use: Databricks, BentoML, Vue.js
+CAND_0042453 | Signal C — Duration impossibility: role 'Marketing Manager' at Pied Piper lasted 98mo but total YOE = 4.2yr (50mo)
+CAND_0043721 | Signal C — Duration impossibility: role 'Sales Executive' at Initech lasted 102mo but total YOE = 4.5yr (54mo)
+CAND_0046649 | Signal B — Skill impossibility: 5 skills marked 'expert' with 0 months of use: SAP, Node.js, gRPC, Flask, Hadoop
+CAND_0046689 | Signal B — Skill impossibility: 4 skills marked 'expert' with 0 months of use: Node.js, SQL, gRPC, Spark
+CAND_0048740 | Signal B — Skill impossibility: 3 skills marked 'expert' with 0 months of use: gRPC, Angular, Content Writing
+CAND_0052478 | Signal A — YOE impossibility: claims 12.4yr but career history spans only 0.8yr (excess: 11.6yr)
+CAND_0053734 | Signal C — Duration impossibility: role 'Sales Executive' at Globex Inc lasted 151mo but total YOE = 8.6yr (103mo)
+CAND_0055685 | Signal C — Duration impossibility: role 'Customer Support' at Acme Corp lasted 64mo but total YOE = 1.4yr (17mo)
+CAND_0055792 | Signal B — Skill impossibility: 3 skills marked 'expert' with 0 months of use: Scrum, TTS, LoRA
+CAND_0055992 | Signal A — YOE impossibility: claims 16.9yr but career history spans only 6.2yr (excess: 10.7yr)
+CAND_0056983 | Signal B — Skill impossibility: 5 skills marked 'expert' with 0 months of use: Rust, Next.js, Redis, Salesforce CRM, MongoDB
+CAND_0057711 | Signal C — Duration impossibility: role 'Java Developer' at Capgemini lasted 140mo but total YOE = 7.7yr (92mo)
+CAND_0060642 | Signal B — Skill impossibility: 5 skills marked 'expert' with 0 months of use: Milvus, Agile, Azure, Diffusion Models, MongoDB
+CAND_0061722 | Signal B — Skill impossibility: 5 skills marked 'expert' with 0 months of use: Terraform, GANs, Milvus, MongoDB, Speech Recognition
+CAND_0063888 | Signal B — Skill impossibility: 5 skills marked 'expert' with 0 months of use: Project Management, Accounting, MLOps, React, Webpack
+CAND_0064077 | Signal C — Duration impossibility: role 'Project Manager' at Hooli lasted 169mo but total YOE = 10.1yr (121mo)
+CAND_0065096 | Signal B — Skill impossibility: 4 skills marked 'expert' with 0 months of use: ETL, Tally, Flask, Rust
+CAND_0065710 | Signal C — Duration impossibility: role 'Marketing Manager' at Hooli lasted 100mo but total YOE = 4.4yr (53mo)
+CAND_0065787 | Signal A — YOE impossibility: claims 10.9yr but career history spans only 2.2yr (excess: 8.7yr)
+CAND_0066405 | Signal A — YOE impossibility: claims 12.3yr but career history spans only 2.1yr (excess: 10.2yr)
+CAND_0070189 | Signal C — Duration impossibility: role 'Operations Manager' at Wayne Enterprises lasted 130mo but total YOE = 6.9yr (83mo)
+CAND_0070429 | Signal B — Skill impossibility: 5 skills marked 'expert' with 0 months of use: MLOps, Figma, Accounting, YOLO, Java
+CAND_0071115 | Signal A — YOE impossibility: claims 16.5yr but career history spans only 5.2yr (excess: 11.2yr)
+CAND_0072379 | Signal B — Skill impossibility: 4 skills marked 'expert' with 0 months of use: Azure, Redux, Illustrator, Spark
+CAND_0073853 | Signal B — Skill impossibility: 5 skills marked 'expert' with 0 months of use: CI/CD, Marketing, GCP, Excel, AWS
+CAND_0074119 | Signal A — YOE impossibility: claims 11.4yr but career history spans only 1.6yr (excess: 9.8yr)
+CAND_0077239 | Signal C — Duration impossibility: role 'Content Writer' at Dunder Mifflin lasted 139mo but total YOE = 7.6yr (91mo)
+CAND_0077250 | Signal A — YOE impossibility: claims 13.1yr but career history spans only 2.2yr (excess: 10.9yr)
+CAND_0084182 | Signal C — Duration impossibility: role 'Civil Engineer' at Hooli lasted 200mo but total YOE = 12.7yr (152mo)
+CAND_0086808 | Signal A — YOE impossibility: claims 11.4yr but career history spans only 1.1yr (excess: 10.3yr)
+CAND_0090900 | Signal A — YOE impossibility: claims 11.7yr but career history spans only 2.7yr (excess: 9.0yr)
+CAND_0091068 | Signal A — YOE impossibility: claims 12.7yr but career history spans only 1.8yr (excess: 10.9yr)
+CAND_0091534 | Signal A — YOE impossibility: claims 16.6yr but career history spans only 6.8yr (excess: 9.9yr)
+CAND_0093331 | Signal A — YOE impossibility: claims 16.1yr but career history spans only 6.7yr (excess: 9.4yr)
+CAND_0093364 | Signal C — Duration impossibility: role 'Business Analyst' at Globex Inc lasted 142mo but total YOE = 7.9yr (95mo)
+CAND_0093547 | Signal C — Duration impossibility: role 'Senior Machine Learning Engineer' at Sarvam AI lasted 43mo but total YOE = 2.9yr (35mo)
+CAND_0095140 | Signal B — Skill impossibility: 3 skills marked 'expert' with 0 months of use: Kafka, QLoRA, CNN
+CAND_0095317 | Signal B — Skill impossibility: 3 skills marked 'expert' with 0 months of use: Webpack, Figma, dbt
+CAND_0095480 | Signal B — Skill impossibility: 4 skills marked 'expert' with 0 months of use: Agile, React, Snowflake, Content Writing
+CAND_0095619 | Signal A — YOE impossibility: claims 15.6yr but career history spans only 3.7yr (excess: 11.9yr)
+CAND_0096150 | Signal A — YOE impossibility: claims 14.7yr but career history spans only 1.6yr (excess: 13.1yr)
