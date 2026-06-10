@@ -1,1 +1,2 @@
 artifacts/embeddings.npy filter=lfs diff=lfs merge=lfs -text
+data/candidates.jsonl filter=lfs diff=lfs merge=lfs -text

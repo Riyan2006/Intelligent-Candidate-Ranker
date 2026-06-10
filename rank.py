@@ -79,6 +79,96 @@ UNAVAILABLE_MULT   = 0.50   # recruiter response rate ≤ 5% AND inactive
 # Tie-breaking: when scores are equal, sort by candidate_id ascending (deterministic)
 
 
+_JD_KEYWORDS = [
+    "embedding", "retrieval", "vector", "faiss", "pinecone", "qdrant",
+    "milvus", "opensearch", "elasticsearch", "weaviate", "ranking",
+    "ndcg", "mrr", "production", "deployed", "shipped",
+    "sentence-transformers", "sentence transformers",
+    "python", "nlp", "search", "recommendation", "fine-tuning", "lora",
+    "rag", "llm", "transformer", "bert", "hugging face", "haystack",
+    "learning to rank", "hybrid search", "dense retrieval", "reranking",
+    "colbert", "dpr", "bi-encoder", "cross-encoder", "bm25",
+    "information retrieval", "semantic search", "vector search",
+]
+
+
+# ── ADD THIS as a standalone function (before main()) ────────────────────────
+
+def _keyword_fallback_sim(candidate: dict) -> float:
+    """
+    Keyword overlap similarity for candidates not in pre-computed embeddings.
+    Used only in sandbox/small-sample mode when a candidate ID is unknown.
+
+    Capped at 0.65 so unknown candidates never artificially beat pre-computed ones.
+    No API calls — pure string matching.
+    """
+    p = candidate.get("profile", {})
+    career = candidate.get("career_history", [])
+    skills = candidate.get("skills", [])
+
+    text = " ".join(filter(None, [
+        p.get("headline", ""),
+        p.get("summary", ""),
+        " ".join(s.get("name", "") for s in skills),
+        " ".join((r.get("description") or "") for r in career),
+        " ".join(r.get("title", "") for r in career),
+    ])).lower()
+
+    hits = sum(1 for kw in _JD_KEYWORDS if kw in text)
+    return round(min(0.65, hits / len(_JD_KEYWORDS) * 0.65 * 2.5), 4)
+
+
+def _compute_behavioral_live(candidate: dict) -> float:
+    """
+    Compute a behavioral score directly from redrob_signals for unknown candidates.
+    Mirrors the logic in behavioral_scorer.py but inline for zero imports.
+    """
+    sigs = candidate.get("redrob_signals", {})
+    if not sigs:
+        return 0.3
+
+    scores = []
+
+    # Availability
+    open_w = 1.0 if sigs.get("open_to_work_flag") else 0.3
+    notice = sigs.get("notice_period_days", 60)
+    notice_s = 1.0 if notice < 30 else (0.7 if notice <= 60 else 0.4)
+    try:
+        from datetime import date
+        last = date.fromisoformat(sigs.get("last_active_date", "2025-01-01"))
+        days_inactive = (date(2026, 6, 3) - last).days
+        recency = max(0.1, 1.0 - days_inactive / 180)
+    except Exception:
+        recency = 0.5
+    scores.append((open_w * 0.4 + notice_s * 0.3 + recency * 0.3) * 0.35)
+
+    # Responsiveness
+    resp_rate = sigs.get("recruiter_response_rate", 0.5)
+    resp_time = sigs.get("avg_response_time_hours", 48)
+    resp_time_s = max(0.1, 1.0 - resp_time / 200)
+    icr = sigs.get("interview_completion_rate", 0.7)
+    scores.append((resp_rate * 0.5 + resp_time_s * 0.3 + icr * 0.2) * 0.30)
+
+    # Market demand
+    views = min(1.0, sigs.get("profile_views_received_30d", 0) / 200)
+    saved = min(1.0, sigs.get("saved_by_recruiters_30d", 0) / 20)
+    apps = min(1.0, sigs.get("applications_submitted_30d", 0) / 10)
+    scores.append((views * 0.3 + saved * 0.4 + apps * 0.3) * 0.20)
+
+    # Technical authenticity
+    github = sigs.get("github_activity_score", -1)
+    github_s = 0.0 if github < 0 else github / 100.0
+    completeness = sigs.get("profile_completeness_score", 50) / 100.0
+    verified = (
+                       int(sigs.get("verified_email", False)) +
+                       int(sigs.get("verified_phone", False)) +
+                       int(sigs.get("linkedin_connected", False))
+               ) / 3.0
+    scores.append((github_s * 0.4 + completeness * 0.3 + verified * 0.3) * 0.15)
+
+    return round(min(1.0, sum(scores) / 1.0), 4)
+
+
 # Logging — minimal, goes to stdout only (no files during ranking)
 
 logging.basicConfig(
@@ -637,32 +727,132 @@ def main() -> None:
     # Load all artifacts
     t_load = time.monotonic()
 
-    embs, cand_ids      = load_embeddings(artifacts)
-    jd_emb              = load_jd_embedding(artifacts)
-    career_feats        = load_career_features(artifacts)
-    behavioral_df       = load_behavioral_scores(artifacts)
-    llm_scores          = load_llm_scores(artifacts)
-    reasoning_cache     = load_reasoning_cache(artifacts)
-    honeypot_ids        = load_honeypot_ids(artifacts)
+    def _run_pipeline(
+            candidates_path: Path,
+            artifacts: Path,
+    ) -> pd.DataFrame:
+        """
+        Core pipeline. Auto-detects small-sample vs full-100K mode.
 
-    log.info("  All artifacts loaded in %.1fs", time.monotonic() - t_load)
+        Small-sample mode (< 1000 candidates in input file):
+          - Scores only the candidates in the input file
+          - Uses pre-computed embeddings for known IDs
+          - Uses keyword fallback for unknown IDs
+          - Computes career features and behavioral scores live for unknown IDs
 
-    # Compute cosine similarity
-    sims = compute_cosine_similarity(embs, jd_emb)
+        Full-100K mode:
+          - Standard fast path: loads all embeddings, computes cosine sim for all
+        """
+        # Count lines to detect mode
+        with open(candidates_path, "r", encoding="utf-8") as f:
+            input_candidates = []
+            for line in f:
+                line = line.strip()
+                if line:
+                    try:
+                        input_candidates.append(json.loads(line))
+                    except json.JSONDecodeError:
+                        continue
 
-    # Free embedding memory — not needed after similarity computed
-    del embs
-    del jd_emb
+        n_input = len(input_candidates)
+        small_sample_mode = n_input < 1000
 
-    # Fuse scores
-    fusion_df = fuse_scores(
-        cand_ids,
-        sims,
-        career_feats,
-        behavioral_df,
-        llm_scores,
-        honeypot_ids,
-    )
+        log.info(
+            "Mode: %s (%d input candidates)",
+            "SMALL-SAMPLE" if small_sample_mode else "FULL-100K",
+            n_input,
+        )
+
+        # Load artifacts
+        embs, precomp_ids = load_embeddings(artifacts)
+        jd_emb = load_jd_embedding(artifacts)
+        career_feats = load_career_features(artifacts)
+        behavioral_df = load_behavioral_scores(artifacts)
+        llm_scores_data = load_llm_scores(artifacts)
+        reasoning_cache = load_reasoning_cache(artifacts)
+        honeypot_ids = load_honeypot_ids(artifacts)
+
+        if small_sample_mode:
+            # Build pre-computed index: {cid: row_index}
+            precomp_index = {cid: i for i, cid in enumerate(precomp_ids)}
+
+            # Normalise JD embedding once
+            norm_jd = jd_emb / (np.linalg.norm(jd_emb) + 1e-9)
+
+            # Score each input candidate
+            cand_ids_out = []
+            emb_sims_out = []
+
+            for c in input_candidates:
+                cid = c.get("candidate_id", "")
+                cand_ids_out.append(cid)
+
+                if cid in precomp_index:
+                    # Use pre-computed embedding
+                    row_emb = embs[precomp_index[cid]].astype(np.float32)
+                    norm_emb = row_emb / (np.linalg.norm(row_emb) + 1e-9)
+                    sim = float(np.clip(norm_emb @ norm_jd, 0.0, 1.0))
+                else:
+                    # Unknown candidate — keyword fallback
+                    sim = _keyword_fallback_sim(c)
+                    log.info("  [%s] Unknown — using keyword fallback sim=%.4f", cid, sim)
+
+                emb_sims_out.append(sim)
+
+            del embs
+            del jd_emb
+
+            sims_array = np.array(emb_sims_out, dtype=np.float32)
+
+            # For unknown candidates, also compute live features + behavioral
+            # We do this by temporarily injecting them into the DataFrames
+            unknown_ids = set(cand_ids_out) - set(career_feats.index)
+            if unknown_ids:
+                log.info("  Computing live features for %d unknown candidates…", len(unknown_ids))
+                # Import feature_engineer functions lazily
+                try:
+                    sys.path.insert(0, str(Path(__file__).parent / "src"))
+                    from feature_engineer import engineer_features
+                    live_feat_rows = []
+                    live_beh_rows = []
+                    for c in input_candidates:
+                        cid = c.get("candidate_id", "")
+                        if cid in unknown_ids:
+                            feat_row = engineer_features(c)
+                            live_feat_rows.append(feat_row)
+                            live_beh_rows.append({
+                                "candidate_id": cid,
+                                "behavioral_score": _compute_behavioral_live(c),
+                            })
+                    if live_feat_rows:
+                        live_feat_df = pd.DataFrame(live_feat_rows).set_index("candidate_id")
+                        career_feats = pd.concat([career_feats, live_feat_df])
+                    if live_beh_rows:
+                        live_beh_df = pd.DataFrame(live_beh_rows).set_index("candidate_id")
+                        behavioral_df = pd.concat([behavioral_df, live_beh_df])
+                except ImportError:
+                    log.warning("  feature_engineer not available — using defaults for unknown candidates")
+
+            fusion_df = fuse_scores(
+                cand_ids_out, sims_array,
+                career_feats, behavioral_df,
+                llm_scores_data, honeypot_ids,
+            )
+
+        else:
+            # Full 100K fast path — unchanged
+            sims = compute_cosine_similarity(embs, jd_emb)
+            del embs
+            del jd_emb
+            fusion_df = fuse_scores(
+                precomp_ids, sims,
+                career_feats, behavioral_df,
+                llm_scores_data, honeypot_ids,
+            )
+
+        return fusion_df, reasoning_cache
+
+    fusion_df, reasoning_cache = _run_pipeline(candidates_path, artifacts)
 
     # Select top-100 and attach reasoning
     top100 = select_top_100(fusion_df, reasoning_cache, candidates_path)
