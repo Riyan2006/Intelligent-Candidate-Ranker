@@ -1,7 +1,6 @@
 venv/
 .env
 __pycache__/
-data/candidates.jsonl
 outputs/
 artifacts/*.log
 artifacts/regen_top100_live.json

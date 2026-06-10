@@ -1,7 +1,6 @@
 """
 rank.py  —  Phase 2 · Step 09
 ==============================
-The actual submission script. Produces the final ranked CSV.
 
 Constraints (from submission_spec.docx):
   - Must run in ≤ 5 minutes wall-clock on CPU
