@@ -30,6 +30,7 @@ compute:
 ai_tools_used:
   - "Claude"
   - "Gemini"
+  - "Voyage AI"
 
 ai_usage_summary: |
   Claude was used extensively for architecture design, script writing, debugging,
