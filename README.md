@@ -13,7 +13,7 @@ A two-phase pipeline that ranks 100,000 candidates against a Senior AI Engineer 
 ## Reproduce the submission (≤ 5 minutes, CPU only, no network)
 
 ```bash
-python rank.py --candidates ./data/candidates.jsonl --out ./Siftly.csv
+python rank.py --candidates ./data/candidates.jsonl --out ./riyansarkar2006_2427.csv
 ```
 
 All pre-computed artifacts are included in the `artifacts/` folder. The ranking step loads them from disk and does pure numpy math — no API calls, no GPU, no downloads.
@@ -39,7 +39,7 @@ pip install -r requirements.txt
 
 ```
 ├── data/
-│   ├── candidates.jsonl          # 100K candidate pool (not in repo — too large)
+│   ├── candidates.jsonl          # 100K candidate pool 
 │   ├── job_description.md        # JD used for ranking
 │   └── sample_candidates.json   # First 50 candidates for inspection
 │
